@@ -35,4 +35,5 @@ model.compile(
     metrics=['accuracy']
 )
 
-model.save('src/model/built-in-model.h5')
+if __name__ == '__main__':
+    model.save('src/model/built-in-model.h5')

@@ -63,7 +63,10 @@ def load_dataset():
 # --------------------------------
 
 def fit_model(data_set):
-    model = load_model('model/built-in-model.h5')
+    try:
+        model = load_model('model/built-in-model.h5')
+    except Exception:
+        from model.built_in_model import model
     # Make dataset
     x_data = np.array(data_set[0] + data_set[1]) / 255.0
     y_data = to_categorical([0]*len(data_set[0]) + [1]*len(data_set[1]))
@@ -91,9 +94,10 @@ def main():
     # Load dataset
     data_set = load_dataset() # create_dataset(frame)
     # Load Model
-    if not os.path.exists('model/built-in-model-trained.h5'):
+    try:
+        model = load_model('model/built-in-model-trained.h5')
+    except Exception:
         fit_model(data_set)
-    model = load_model('model/built-in-model-trained.h5')
     # Apply Model
     with CV2_UI_ImageWindow('Apply Model') as window:
         window.image = frame
