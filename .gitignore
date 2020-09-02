@@ -1,0 +1,5 @@
+# Visual Studio Code settings
+.vscode
+
+# Python compiled executables .pyc
+__pycache__
