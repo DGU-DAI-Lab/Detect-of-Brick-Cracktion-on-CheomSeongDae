@@ -16,6 +16,10 @@ from core.determine_possibility import sequence
 
 # --------------------------------
 
+ENABLE_CREATING_DATASET = False # 이 값을 True로 변경하면, 데이터 셋을 생성하는 과정이 활성화 된다.
+
+# --------------------------------
+
 def mkdir(path):
     if not os.path.exists(path): os.mkdir(path)
     return path
@@ -24,12 +28,16 @@ dataset_path_format = '../asset/dataset/{class_id}/{file}'
 class_path = {
     None: mkdir('../asset/dataset'),
     0: mkdir('../asset/dataset/0'),
-    1: mkdir('../asset/dataset/1')
-}
+    1: mkdir('../asset/dataset/1')}
 
 # --------------------------------
 
 def create_dataset(frame):
+    # 주어진 이미지 (frame) 으로 부터 직접 데이터 셋을 생성.
+    # * 커서가 가리키는 영역을 추출하는 방법은 키보드 버튼 '0' 혹은 '1'을 누르면 된다.
+    #   눌린 버튼 숫자와 동일한 이름의 폴더아래 이미지가 저장된다.
+    #   (샘플 데이터셋은 "0: 정상 영역 / 1: 균열 영역" 으로 분류한 예시이다.)ㄴ
+    # * UI는 키보드 버튼 'Q'를 누르면 종료된다.
     data_set = collections.defaultdict(list)
     # Create Dataset
     with CV2_UI_ImageWindow('Create Dataset') as window:
@@ -54,6 +62,7 @@ def create_dataset(frame):
     return data_set
 
 def load_dataset():
+    # 'asset/dataset'으로 부터 사전에 생성된 데이터 셋을 불러옴.
     data_set = collections.defaultdict(list)
     for class_id in [0,1]:
         for file in glob.glob(f'{class_path[class_id]}/*.bmp'):
@@ -93,7 +102,10 @@ def fit_model(data_set):
 def main():
     frame = get_image(sample_image_urls[0])
     # Load dataset
-    data_set = load_dataset() # create_dataset(frame)
+    if ENABLE_CREATING_DATASET:
+        data_set = create_dataset(frame)
+    else:
+        data_set = load_dataset()
     # Load Model
     try:
         model = load_model('model/built-in-model-trained.h5')
