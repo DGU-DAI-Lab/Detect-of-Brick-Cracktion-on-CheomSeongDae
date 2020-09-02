@@ -72,6 +72,7 @@ def load_dataset():
 # --------------------------------
 
 def fit_model(data_set):
+    TRAIN_DATA_RATIO = 0.8 # 전체 데이터 중 train 데이터로 사용 될 데이터의 비율 (나머지는 test 데이터로 사용)
     try:
         model = load_model('model/built-in-model.h5')
     except Exception:
@@ -86,10 +87,11 @@ def fit_model(data_set):
     x_data_shuffled = x_data[shuffled_indices]
     y_data_shuffled = y_data[shuffled_indices]
     # Seperate dataset
-    x_train = x_data_shuffled[:int(n_data*0.8)]
-    y_train = y_data_shuffled[:int(n_data*0.8)]
-    x_test = x_data_shuffled[int(n_data*0.8):]
-    y_test = y_data_shuffled[int(n_data*0.8):]
+    n_train_data = int(n_data * TRAIN_DATA_RATIO)
+    x_train = x_data_shuffled[:n_train_data]
+    y_train = y_data_shuffled[:n_train_data]
+    x_test = x_data_shuffled[n_train_data:]
+    y_test = y_data_shuffled[n_train_data:]
     # Fit model
     model.fit(x_train, y_train, epochs=16)
     # Evaluate model
@@ -100,7 +102,7 @@ def fit_model(data_set):
 # --------------------------------
 
 def main():
-    frame = get_image(sample_image_urls[0])
+    frame = get_image(sample_image_urls[0]) # 모델에 사용할 이미지. 현재는 'src/module/web.py'의 get_image(url) 함수로 인터넷 이미지를 다운받아 사용한다.
     # Load dataset
     if ENABLE_CREATING_DATASET:
         data_set = create_dataset(frame)
