@@ -86,6 +86,7 @@ def fit_model(data_set):
     # Evaluate model
     model.evaluate(x_test, y_test)
     model.save('model/built-in-model-trained.h5')
+    return model
 
 # --------------------------------
 
@@ -97,7 +98,7 @@ def main():
     try:
         model = load_model('model/built-in-model-trained.h5')
     except Exception:
-        fit_model(data_set)
+        model = fit_model(data_set)
     # Apply Model
     with CV2_UI_ImageWindow('Apply Model') as window:
         window.image = frame
